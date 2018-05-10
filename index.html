@@ -1,0 +1,67 @@
+    <!DOCTYPE html>
+    <html>
+
+    <head>
+      <meta charset="UTF-8">
+      <title>Hello World!</title>
+
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"
+
+            rel="stylesheet">
+      <style>
+        .kb-debug-widget {
+          position: fixed;
+          bottom: 0;
+          height: 200px;
+          overflow-x: hidden;
+          overflow-y: auto;
+          background: grey;
+          left: 0;
+          right: 0;
+          font-size: 10px;
+        }
+      </style>
+    </head>
+
+    <body>
+      <h3>Demo Network widget</h3>
+      <p>
+        This network widget should fill up by requests that are happening
+        on the main electron process.
+      </p>
+      <div class="kb-debug-widget">
+        <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+               id="network">
+          <tr>
+            <th>Name</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Type</th>
+          </tr>
+        </table>
+      </div>
+      <script>
+        require('./renderer.js');
+        var {
+          ipcRenderer,
+          remote
+        } = require('electron');
+
+        ipcRenderer.on('network', (event, arg) => {
+          const networkElement = document.getElementById('network');
+
+          // print whatever you want here!
+          networkElement.innerHTML +=
+            `
+          <tr>
+            <td>${arg.request.href}</td>
+            <td>${arg.request.method}</td>
+            <td>${arg.statusCode}</td>
+            <td>${arg.headers['content-type']}</td>
+          </tr>
+          `;
+        });
+      </script>
+    </body>
+
+    </html>
